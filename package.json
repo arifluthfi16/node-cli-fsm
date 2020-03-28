@@ -14,6 +14,8 @@
   "dependencies": {
     "colors": "^1.4.0",
     "esm": "^3.2.25",
+    "mongodb": "^3.5.5",
+    "mysql": "^2.18.1",
     "yargonaut": "^1.1.4",
     "yargs": "^15.3.1"
   }

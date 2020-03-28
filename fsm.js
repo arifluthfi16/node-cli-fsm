@@ -4,7 +4,7 @@
 const colors = require('colors');
 var yargonaut = require('yargonaut')
 const yargs = require('yargs');
-
+const sql = require('./src/sql');
 const file = require('./src/file');
 
 // Style Customization
@@ -23,6 +23,18 @@ const options = {
     dir : {
         alias : 'd',
         desc  : 'Directory name',
+        demandOption : true,
+        type : 'string'
+    },
+    username : {
+        alias : 'u',
+        desc  : 'username',
+        demandOption : true,
+        type : 'string'
+    },
+    email : {
+        alias : 'e',
+        desc  : 'email',
         demandOption : true,
         type : 'string'
     }
@@ -148,6 +160,101 @@ yargs
             file.renameDir(argv.dir,argv.newName);
         }
     )
+
+    // SQL Working
+    .command(
+        'show-table',
+        '[SQL]'.green+' Show all table in sampledb',
+        function(yargs){
+            return yargs.option({
+                
+            })
+        },
+        function(argv){
+            sql.showTable();
+        }
+
+    )
+
+    .command(
+        'create-user',
+        '[SQL]'.green+' Create a new user',
+        function(yargs){
+            return yargs.option({
+                'username' : options.username,
+                'email'    : options.email,
+                'type'     : {
+                    alias : 't',
+                    demandOption : false,
+                    desc : 'Type of user',
+                    type : 'boolean'
+                }
+            })
+        },
+        function(argv){
+            sql.createNewUser(argv.username,argv.email,argv.type);
+        }
+    )
+
+    .command(
+        'create-type',
+        '[SQL]'.green+' Create a new user type',
+        function(yargs){
+            return yargs.option({
+                'typename'     : {
+                    alias : 't',
+                    demandOption : false,
+                    desc : 'Name of new type',
+                    type : 'string'
+                }
+            })
+        },
+        function(argv){
+            sql.createNewUserType(argv.typename);
+        }
+    )
+
+    .command(
+        'read-user',
+        '[SQL]'.green+' Read user data by username',
+        function(yargs){
+            return yargs.option({
+                'username' : options.username
+            })
+        },
+        function(argv){
+            sql.readUserByUsername(argv.username);
+        }
+    )
+
+    .command(
+        'delete-user',
+        '[SQL]'.green+' Delete user data by the username',
+        function(yargs){
+            return yargs.option({
+                'username' : options.username
+            })
+        },
+        function(argv){
+            sql.deleteByUsername(argv.username);
+        }
+    )
+
+    .command(
+        'update-email',
+        '[SQL]'.green+' Delete user email by the username',
+        function(yargs){
+            return yargs.option({
+                'username' : options.username,
+                'newemail' : options.email
+            })
+        },
+        function(argv){
+            sql.updateEmailByUsername(argv.username,argv.newemail);
+        }
+    )
+    
+    
 
 
     .help()
