@@ -6,6 +6,7 @@ var yargonaut = require('yargonaut')
 const yargs = require('yargs');
 const sql = require('./src/sql');
 const file = require('./src/file');
+const mongo = require('./src/mongo');
 
 // Style Customization
 yargonaut
@@ -50,7 +51,7 @@ yargs
     // File working
     .command(
         'read-file', 
-        'Read a give file and print it out',
+        '[F]'.yellow+' Read a give file and print it out',
         function(yargs){
             return yargs.option({
                 'file': options.file
@@ -63,7 +64,7 @@ yargs
 
     .command(
         'write-file',
-        'Write a file in current dir with data input',
+        '[F]'.yellow+' Write a file in current dir with data input',
         function(yargs){
             return yargs.option({
                 'file': options.file,
@@ -83,7 +84,7 @@ yargs
 
     .command(
         'delete-file',
-        'Delete a file in current dir',
+        '[F]'.yellow+' Delete a file in current dir',
         function(yargs){
             return yargs.option({
                 'file': options.file,
@@ -97,7 +98,7 @@ yargs
 
     .command(
         'rename-file',
-        'Rename a file in current dir',
+        '[F]'.yellow+' Rename a file in current dir',
         function(yargs){
             return yargs.option({
                 'file': options.file,
@@ -116,7 +117,7 @@ yargs
 
     .command(
         'create-dir',
-        'Create a new directory',
+        '[F]'.yellow+' Create a new directory',
         function(yargs){
             return yargs.option({
                 'dir': options.dir,
@@ -130,7 +131,7 @@ yargs
 
     .command(
         'delete-dir',
-        'Delete a directory',
+        '[F]'.yellow+' Delete a directory',
         function(yargs){
             return yargs.option({
                 'dir':options.dir
@@ -144,7 +145,7 @@ yargs
 
     .command(
         'rename-dir',
-        'Rename a directory',
+        '[F]'.yellow+' Rename a directory',
         function(yargs){
             return yargs.option({
                 'dir': options.dir,
@@ -164,7 +165,7 @@ yargs
     // SQL Working
     .command(
         'show-table',
-        '[SQL]'.green+' Show all table in sampledb',
+        '[S]'.green+' Show all table in sampledb',
         function(yargs){
             return yargs.option({
                 
@@ -178,7 +179,7 @@ yargs
 
     .command(
         'create-user',
-        '[SQL]'.green+' Create a new user',
+        '[S]'.green+' Create a new user',
         function(yargs){
             return yargs.option({
                 'username' : options.username,
@@ -198,7 +199,7 @@ yargs
 
     .command(
         'create-type',
-        '[SQL]'.green+' Create a new user type',
+        '[S]'.green+' Create a new user type',
         function(yargs){
             return yargs.option({
                 'typename'     : {
@@ -216,7 +217,7 @@ yargs
 
     .command(
         'read-user',
-        '[SQL]'.green+' Read user data by username',
+        '[S]'.green+' Read user data by username',
         function(yargs){
             return yargs.option({
                 'username' : options.username
@@ -229,7 +230,7 @@ yargs
 
     .command(
         'delete-user',
-        '[SQL]'.green+' Delete user data by the username',
+        '[S]'.green+' Delete user data by the username',
         function(yargs){
             return yargs.option({
                 'username' : options.username
@@ -242,7 +243,7 @@ yargs
 
     .command(
         'update-email',
-        '[SQL]'.green+' Delete user email by the username',
+        '[S]'.green+' Delete user email by the username',
         function(yargs){
             return yargs.option({
                 'username' : options.username,
@@ -253,8 +254,79 @@ yargs
             sql.updateEmailByUsername(argv.username,argv.newemail);
         }
     )
-    
-    
+
+    // Mongo Working
+    .command(
+        'm-create-user',
+        '[M]'.blue+' Create a new user in mongodb',
+        function(yargs){
+            return yargs.option({
+                'username' : options.username,
+                'email'    : options.email,
+            })
+        },
+        function(argv){
+            mongo.insertNewUser(argv.username,argv.email);
+        }
+    )
+
+    .command(
+        'm-create-collection',
+        '[M]'.blue+' Create a new collection in mongodb',
+        function(yargs){
+            return yargs.option({
+                'colname' : {
+                    alias : 'c',
+                    demandOption : true,
+                    desc : 'Name of new collection',
+                    type : 'string'
+                }
+            })
+        },
+        function(argv){
+            mongo.createCollection(argv.colname);
+        }
+    )
+
+    .command(
+        'm-read-user',
+        '[M]'.blue+' Read user data by the email in mongodb',
+        function(yargs){
+            return yargs.option({
+                'email' : options.email
+            })
+        },
+        function(argv){
+            mongo.readUserByEmail(argv.email);
+        }
+    )
+
+    .command(
+        'm-delete-user',
+        '[M]'.blue+' Delete user data by the email in mongodb',
+        function(yargs){
+            return yargs.option({
+                'email' : options.email
+            })
+        },
+        function(argv){
+            mongo.deleteByEmail(argv.email);
+        }
+    )
+
+    .command(
+        'm-update-email',
+        '[M]'.blue+' Update email by the username in mongodb',
+        function(yargs){
+            return yargs.option({
+                'username' : options.username,
+                'newemail' : options.email
+            })
+        },
+        function(argv){
+            mongo.updateEmailByUsername(argv.username,argv.newemail);
+        }
+    )
 
 
     .help()
